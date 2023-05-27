@@ -84,6 +84,8 @@ const bird={
   w:34,
   h:26,
 
+  radius:12,
+
   frame:0,
 
   gravity:0.25,
@@ -200,14 +202,15 @@ const pipes={
       ctx.drawImage(sprite,this.top.sX,this.top.sY,this.w,this.h,p.x,topYPos,this.w,this.h);
 
       //for the bottom pipe
-      ctx.drawImage(sprite,this.bottom.sX,this.bottom.sY,this.w,this.h,bottomYPos,p.x,this.w,this.h);
+      ctx.drawImage(sprite,this.bottom.sX,this.bottom.sY,this.w,this.h,p.x,bottomYPos,this.w,this.h);
     }
   },
 
   update:function(){
-    if(state.current !== state.game) return;
+    if(state.current !== state.game) 
+    return;
 
-    if(frames%100 === 0 ){
+    if(frames%100 == 0 ){
       this.position.push({
         x: cvs.width,
         y:this.maxYPos * (Math.random() +1)
@@ -217,8 +220,20 @@ const pipes={
     for (let i=0; i<this.position.length; i++){
       let p = this.position[i];
       p.x -= this.dx;
+      //COLLISION DETECTION
+      //TOP PIPE
+      if(bird.x+bird.radius>p.x && bird.x-bird.radius<p.x+this.w && bird.y + bird.radius > p.y && bird.y - bird.radius< p.y + this.h){
+        state.current =state.over;
+      }
+      //BOTTOM PIPE
+      if(bird.x+bird.radius>p.x && bird.x-bird.radius<p.x+this.w && bird.y + bird.radius > p.y && bird.y - bird.radius< p.y + this.h){
+        state.current =state.over;
+      }
 
       //if the pipes go beyond canvas,we delete them from the array
+      if (p.x+this.w<=0){
+        this.position.shift();
+      }
     }
   }
 
@@ -258,4 +273,3 @@ function loop(){
 }
 
 loop();
-//1 hrs
